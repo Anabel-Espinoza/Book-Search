@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
 // import { createUser } from '../utils/API';
@@ -49,11 +49,11 @@ const SignupForm = () => {
     }
   }
    
-  //   setUserFormData({
-  //     username: '',
-  //     email: '',
-  //     password: '',
-  //   });
+    setUserFormData({
+      username: '',
+      email: '',
+      password: '',
+    });
   // };
 
   return (
