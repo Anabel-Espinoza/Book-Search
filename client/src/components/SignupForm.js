@@ -15,13 +15,13 @@ const SignupForm = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [addUser, { error }] = useMutation(ADD_USER)
   
-  useEffect(() => {
-    if(error) {
-      setShowAlert(true)
-    } else {
-      setShowAlert(false)
-    }
-  }, [error])
+  // useEffect(() => {
+  //   if(error) {
+  //     setShowAlert(true)
+  //   } else {
+  //     setShowAlert(false)
+  //   }
+  // }, [error])
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -30,14 +30,14 @@ const SignupForm = () => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    console.log(userFormData)
+    // console.log(userFormData)
     
-    // const form = event.currentTarget;
+    const form = event.currentTarget;
 
-    // if (form.checkValidity() === false) {
-    //   event.preventDefault();
-    //   event.stopPropagation();
-    // }
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
 
     try {
       const { data } = await addUser({
@@ -46,15 +46,16 @@ const SignupForm = () => {
       Auth.login(data.addUser.token)
     } catch (e) {
       console.error(e)
+      setShowAlert(true)
     }
-  }
+  
    
     setUserFormData({
       username: '',
       email: '',
       password: '',
     });
-  // };
+  };
 
   return (
     <>
