@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose');
 const bcrypt = require ('bcrypt')
+const bookSchema = require ('./Book')
 
 const userSchema = new Schema({
   username: {
@@ -19,13 +20,13 @@ const userSchema = new Schema({
     required: true,
     minlength: 5,
   },
-  savedBooks: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Book',
-    },
-  ],
-});
+  savedBooks: [bookSchema],
+}, 
+{ toJSON: {
+    virtuals: true
+  }
+}
+);
 
 userSchema.virtual('bookCount').get(function () {
   return this.savedBooks.length;

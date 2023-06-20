@@ -1,22 +1,16 @@
 const { AuthenticationError } = require('apollo-server-express');
-const { User, Book } = require('../models');
+const { User } = require('../models');
 const { signToken } = require('../utils/auth');
 
 const resolvers = {
   Query: {
-    users: async () => {
-      return User.find().populate('books');
-    },
-    user: async (parent, { username }) => { // get single user
-      return User.findOne({ username }).populate('books');
-    },
-    books: async (parent, { username }) => {
-      const params = username ? { username } : {};
-      return Book.find(params).sort({ createdAt: -1 });
-    },
-    books: async (parent, { thoughtId }) => {
-      return Book.findOne({ _id: thoughtId });
-    },
+    me: async (parent, args, context) => {
+      if(context.user) {
+        const userData = await User.findOne({ _id: context.user._id }).select('-__v -password') // double check
+        return userData
+      }
+      throw new AuthenticationError('Please log in first')
+    }
   },
 
   Mutation: {
@@ -25,6 +19,7 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
+
     login: async (parent, { email, password }) => { // login
       const user = await User.findOne({ email });
 
@@ -33,49 +28,38 @@ const resolvers = {
       }
 
       const correctPw = await user.isCorrectPassword(password);
-
       if (!correctPw) {
         throw new AuthenticationError('Incorrect credentials');
       }
 
       const token = signToken(user);
-
       return { token, user };
     },
-    // Check this. Book doenst need to be created, only added to user
-    saveBook: async (parent, { authors, description, bookId, image, link, title }) => { //save book and add to user books
-      const book = await Book.create({ authors, description, bookId, image, link, title });
+    // Check if need args as 3rd param
+    saveBook: async (parent, { newBook }) => { 
+      if (context.user) {
+        const updatedUser = await User.findOneAndUpdate(
+          { _id: context.user._id },
+          { $addToSet: { savedBooks: newBook }},
+          { new: true }
+        );
+        return updatedUser;
+      }
+      throw new AuthenticationError('Please log in first')
+    },
 
-      await User.findOneAndUpdate(
-        { username },
-        { $addToSet: { savedBooks: book.bookId } }
-      );
-
-      return book;
+    removeBook: async (parent, { bookId }) => {
+      if (context.user) {
+        const updatedUser = await User.findOneAndUpdate(
+          { _id: context.user._id },
+          { $pull: { savedBooks: { bookId: bookId }}},
+          { new: true }
+        );
+        return updatedUser;
+      }
+      throw new AuthenticationError('Please log in first')
     },
-    addComment: async (parent, { thoughtId, commentText, commentAuthor }) => {
-      return Thought.findOneAndUpdate(
-        { _id: thoughtId },
-        {
-          $addToSet: { comments: { commentText, commentAuthor } },
-        },
-        {
-          new: true,
-          runValidators: true,
-        }
-      );
-    },
-    removeThought: async (parent, { thoughtId }) => {
-      return Thought.findOneAndDelete({ _id: thoughtId });
-    },
-    removeComment: async (parent, { thoughtId, commentId }) => {
-      return Thought.findOneAndUpdate(
-        { _id: thoughtId },
-        { $pull: { comments: { _id: commentId } } },
-        { new: true }
-      );
-    },
-  },
-};
+  }
+}
 
 module.exports = resolvers;
