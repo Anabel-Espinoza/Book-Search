@@ -36,11 +36,11 @@ const resolvers = {
       return { token, user };
     },
     // Check if need args as 3rd param
-    saveBook: async (parent, { newBook }, context) => { 
+    saveBook: async (parent, { book }, context) => { 
       if (context.user) {
         const updatedUser = await User.findOneAndUpdate(
           { _id: context.user._id },
-          { $addToSet: { savedBooks: newBook }},
+          { $addToSet: { savedBooks: book }},
           { new: true }
         );
         return updatedUser;
