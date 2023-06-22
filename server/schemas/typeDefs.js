@@ -15,7 +15,7 @@ const typeDefs = gql`
     image: String
     link: String
     title: String!
-    bookId: String!
+    bookId: ID!
   }
 
   type Auth {

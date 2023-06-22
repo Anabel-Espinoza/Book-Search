@@ -10,7 +10,6 @@ import {
 // import { getMe, deleteBook } from '../utils/API';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
-
 import { useQuery, useMutation } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries';
 import { REMOVE_BOOK } from '../utils/mutations';
@@ -63,7 +62,7 @@ const SavedBooks = () => {
       // const response = await deleteBook(bookId, token);
 
       const { data } = await removeBook({
-        variables: { bookId: bookId }
+        variables: { bookId }
       })
 
       // if (!response.ok) {
@@ -75,6 +74,7 @@ const SavedBooks = () => {
 
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
+      
     } catch (err) {
       console.error(err);
     }
