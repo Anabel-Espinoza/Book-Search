@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/Anabel-Espinoza/Book-Search#readme",
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "concurrently": "^8.2.0"
   }
 }
