@@ -5,7 +5,7 @@
 
 ## Description
 
-This project took a functional Google Books API search engine built with RESTful API and refactored it into a MERN stac k application with GraphQL and Apollo Server. 
+This project took a functional Google Books API search engine built with RESTful API and refactored it into a MERN stack application with GraphQL and Apollo Server. 
 The application allows the user to create an account, sign in, search for books, add them to their profile, review previously saved books, and remove books from their list.
 
 
@@ -29,7 +29,7 @@ To run locally:
 
 ## Usage
 
-The link to access the deployed application is: 
+The link to access the deployed application is *[here](https://thawing-garden-33255-dc0e53e242e6.herokuapp.com/)*.
 
 The application allows the user to signup/login. The search book option can be accessed without logging in, but the user won't have the option to add a book to their profile.
 Once the user has logged in, books can saved by clicking on the "save this book!" button.
